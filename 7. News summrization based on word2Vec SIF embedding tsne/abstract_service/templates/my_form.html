@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>自动文本摘要</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body{padding:0;margin:0;}
+        #bg{width:100%;height:100%;position:absolute;z-index:-1;background: #D3D3D3;}
+        .title{
+        background: #D3D3D3;
+        width: 100%;
+        height: 6%;
+        }
+        .button{
+        width: 100%;
+        height: 6%;
+        }
+        .button_left{
+        float: left;
+        width: 65%;
+        height: 100%;
+        }
+        .button_right_l{
+        float: right;
+        width: 15%;
+        height: 100%;
+        margin: auto;
+        }
+        .button_right_r{
+        float: right;
+        width: 15%;
+        height: 100%;
+        margin: auto;
+        }
+        .left{
+        background: #D3D3D3;
+        float: left;
+        width: 65%;
+        height: 88%;
+        }
+        .right{
+        background: #A9A9A9;
+        float: right;
+        width: 35%;
+        height: 88%;
+        }
+    </style>
+</head>
+<body>
+<form role="form" method="post">
+    <div id="bg">
+        <textarea class="title" placeholder="请输入标题" id="title"></textarea>
+        <textarea class="left" placeholder="请输入正文" id="content"></textarea>
+        <textarea class="right" placeholder="文本摘要" readonly='readonly' id="docs_bk"></textarea>
+        <div class="button" id="bottom">
+            <button class="button_left" type="button" id="tj">提交</button>
+            <p class="button_right_l"><input id="eng" type="checkbox" name="eng" value=""/>英文摘要</p>
+            <p class="button_right_r"><input id="chi" type="checkbox" name="chi" value=""/>中文摘要</p>
+        </div>
+    </div>
+</form>
+<script>
+    $("#tj").click(function() {
+		var title = $("#title").val();
+        var content = $("#content").val();
+        var eng = $("#eng").prop("checked");
+        var chi = $("#chi").prop("checked");
+        $.ajax({
+            url:"/get_abstract",
+            type:"post",
+            data: {"title":title, "content":content, "eng":eng, "chi":chi},
+            dataType: "json",
+            success:function(data){
+				if(data["status"]=="success") {
+                	$("#docs_bk").val(data["data"]);
+					alert(data["msg"]);
+				}
+				if(data["status"]=="failure") {
+                	$("#docs_bk").val(data["data"]);
+                	alert(data["msg"]);
+				}
+            },
+            error:function(e){
+                alert("错误!!!");
+            }
+        })
+    });
+</script>
+
+</body>
+</html>
